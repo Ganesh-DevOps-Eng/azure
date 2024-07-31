@@ -18,8 +18,8 @@ jobs:
   - task: Docker@2
     inputs:
       command: 'buildAndPush'
-      containerRegistry: 'your-docker-registry-service-connection'
-      repository: 'your-docker-repo/your-image-name'
+      containerRegistry: 'dockerhub'
+      repository: 'nginx'
       tags: |
         $(Build.BuildId)
       Dockerfile: '**/Dockerfile'
@@ -28,13 +28,13 @@ jobs:
 
   - task: AzureWebApp@1
     inputs:
-      azureSubscription: 'your-azure-subscription'
-      appName: 'your-web-app-name'
-      package: '$(Build.ArtifactStagingDirectory)/your-image-name:$(Build.BuildId)'
+      azureSubscription: 'matellio_Azure'
+      appName: 'First_Game'
+      package: '$(Build.ArtifactStagingDirectory)/nginx:$(Build.BuildId)'
 
   - task: AzureCLI@2
     inputs:
-      azureSubscription: 'your-azure-subscription'
+      azureSubscription: 'matellio_Azure'
       scriptType: 'bash'
       scriptPath: 'deploy.sh'
-      arguments: '--image $(Build.Repository.Name)/your-image-name:$(Build.BuildId)'
+      arguments: '--image nginx:$(Build.BuildId)'
