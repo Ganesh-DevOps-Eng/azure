@@ -11,7 +11,7 @@ jobs:
     vmImage: 'ubuntu-latest'
 
   steps:
-  - task: Checkout@2
+  - task: Checkout@1
     inputs:
       repository: self
 
