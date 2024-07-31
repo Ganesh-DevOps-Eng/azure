@@ -11,7 +11,7 @@ jobs:
     vmImage: 'ubuntu-latest'
 
   steps:
-  - task: Checkout@v2
+  - task: Checkout@2
     inputs:
       repository: self
 
@@ -28,13 +28,13 @@ jobs:
 
   - task: AzureWebApp@1
     inputs:
-      azureSubscription: 'matellio_Azure'
-      appName: 'First_Game'
+      azureSubscription: 'my-azure-subscription'
+      appName: 'my-web-app'
       package: '$(Build.ArtifactStagingDirectory)/nginx:$(Build.BuildId)'
 
   - task: AzureCLI@2
     inputs:
-      azureSubscription: 'matellio_Azure'
+      azureSubscription: 'my-azure-subscription'
       scriptType: 'bash'
       scriptPath: 'deploy.sh'
       arguments: '--image nginx:$(Build.BuildId)'
