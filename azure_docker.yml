@@ -1,0 +1,40 @@
+trigger:
+- main
+
+pr:
+- main
+
+jobs:
+- job: BuildAndDeploy
+  displayName: Build and Deploy Docker Image
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  steps:
+  - task: Checkout@v2
+    inputs:
+      repository: self
+
+  - task: Docker@2
+    inputs:
+      command: 'buildAndPush'
+      containerRegistry: 'your-docker-registry-service-connection'
+      repository: 'your-docker-repo/your-image-name'
+      tags: |
+        $(Build.BuildId)
+      Dockerfile: '**/Dockerfile'
+      buildContext: '$(Build.SourcesDirectory)'
+      arguments: '--build-arg BUILDKIT_INLINE_CACHE=1'
+
+  - task: AzureWebApp@1
+    inputs:
+      azureSubscription: 'your-azure-subscription'
+      appName: 'your-web-app-name'
+      package: '$(Build.ArtifactStagingDirectory)/your-image-name:$(Build.BuildId)'
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'your-azure-subscription'
+      scriptType: 'bash'
+      scriptPath: 'deploy.sh'
+      arguments: '--image $(Build.Repository.Name)/your-image-name:$(Build.BuildId)'
