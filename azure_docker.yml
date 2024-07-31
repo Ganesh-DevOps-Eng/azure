@@ -15,22 +15,22 @@ jobs:
     inputs:
       repository: self
 
-  - task: Docker@2
-    inputs:
-      command: 'buildAndPush'
-      containerRegistry: 'dockerhub'
-      repository: 'nginx'
-      tags: |
-        $(Build.BuildId)
-      Dockerfile: '**/Dockerfile'
-      buildContext: '$(Build.SourcesDirectory)'
-      arguments: '--build-arg BUILDKIT_INLINE_CACHE=1'
+- task: Docker@2
+  inputs:
+    command: 'buildAndPush'
+    containerRegistry: 'dockerhub'  # Ensure this matches your Docker registry service connection name
+    repository: 'nginx'
+    tags: |
+      $(Build.BuildId)
+    Dockerfile: '**/Dockerfile'
+    buildContext: '$(Build.SourcesDirectory)'
+    arguments: '--build-arg BUILDKIT_INLINE_CACHE=1'
 
-  - task: AzureWebApp@1
-    inputs:
-      azureSubscription: 'my-azure-subscription'
-      appName: 'my-web-app'
-      package: '$(Build.ArtifactStagingDirectory)/nginx:$(Build.BuildId)'
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'my-azure-subscription'  # Ensure this matches your Azure subscription service connection name
+    appName: 'my-web-app'
+    package: '$(Build.ArtifactStagingDirectory)/nginx:$(Build.BuildId)'
 
   - task: AzureCLI@2
     inputs:
